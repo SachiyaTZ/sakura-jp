@@ -1,0 +1,3 @@
+email,password,role
+user1@example.com,password123,buyer
+user2@example.com,password123,manager

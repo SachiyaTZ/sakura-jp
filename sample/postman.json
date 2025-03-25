@@ -1,0 +1,111 @@
+{
+  "info": {
+    "_postman_id": "your-collection-id",
+    "name": "Notification API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Notification",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <your-jwt-token>",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"64f8e4b1c9b1f2a3d4e5f6g8\",\n  \"type\": \"B2B\",\n  \"message\": \"Your payment is due in 3 days.\",\n  \"role\": \"buyer\",\n  \"metadata\": {\n    \"paymentId\": \"64f8e4b1c9b1f2a3d4e5f6g9\",\n    \"stockLevel\": 100\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/notifications",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "notifications"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Notifications",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <your-jwt-token>",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/api/notifications/64f8e4b1c9b1f2a3d4e5f6g8",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "notifications", "64f8e4b1c9b1f2a3d4e5f6g8"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Notification",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <your-jwt-token>",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"read\": true\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/notifications/64f8e4b1c9b1f2a3d4e5f6g7",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "notifications", "64f8e4b1c9b1f2a3d4e5f6g7"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Notification",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <your-jwt-token>",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/api/notifications/64f8e4b1c9b1f2a3d4e5f6g7",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "notifications", "64f8e4b1c9b1f2a3d4e5f6g7"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

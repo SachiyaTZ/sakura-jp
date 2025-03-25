@@ -1,0 +1,330 @@
+{
+    "info": {
+      "_postman_id": "your-collection-id",
+      "name": "Category, Brand, SubCategory APIs",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Category APIs",
+        "item": [
+          {
+            "name": "Add Category",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer <your-jwt-token>",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "type": "text"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"Category A\",\n  \"companyId\": \"64f1b2c8e4b0d8a8d8f8f8f8\"\n}"
+              },
+              "url": {
+                "raw": "http://localhost:5000/api/categories",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "5000",
+                "path": ["api", "categories"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get Category by ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer <your-jwt-token>",
+                  "type": "text"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:5000/api/categories/64f1b2c8e4b0d8a8d8f8f8f8",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "5000",
+                "path": ["api", "categories", "64f1b2c8e4b0d8a8d8f8f8f8"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Update Category",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer <your-jwt-token>",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "type": "text"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"Updated Category A\",\n  \"companyId\": \"64f1b2c8e4b0d8a8d8f8f8f8\"\n}"
+              },
+              "url": {
+                "raw": "http://localhost:5000/api/categories/64f1b2c8e4b0d8a8d8f8f8f8",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "5000",
+                "path": ["api", "categories", "64f1b2c8e4b0d8a8d8f8f8f8"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Soft Delete Category",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer <your-jwt-token>",
+                  "type": "text"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:5000/api/categories/64f1b2c8e4b0d8a8d8f8f8f8",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "5000",
+                "path": ["api", "categories", "64f1b2c8e4b0d8a8d8f8f8f8"]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "Brand APIs",
+        "item": [
+          {
+            "name": "Add Brand",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer <your-jwt-token>",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "type": "text"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"Brand A\",\n  \"companyId\": \"64f1b2c8e4b0d8a8d8f8f8f8\"\n}"
+              },
+              "url": {
+                "raw": "http://localhost:5000/api/brands",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "5000",
+                "path": ["api", "brands"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get Brand by ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer <your-jwt-token>",
+                  "type": "text"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:5000/api/brands/64f1b2c8e4b0d8a8d8f8f8f8",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "5000",
+                "path": ["api", "brands", "64f1b2c8e4b0d8a8d8f8f8f8"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Update Brand",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer <your-jwt-token>",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "type": "text"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"Updated Brand A\",\n  \"companyId\": \"64f1b2c8e4b0d8a8d8f8f8f8\"\n}"
+              },
+              "url": {
+                "raw": "http://localhost:5000/api/brands/64f1b2c8e4b0d8a8d8f8f8f8",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "5000",
+                "path": ["api", "brands", "64f1b2c8e4b0d8a8d8f8f8f8"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Soft Delete Brand",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer <your-jwt-token>",
+                  "type": "text"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:5000/api/brands/64f1b2c8e4b0d8a8d8f8f8f8",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "5000",
+                "path": ["api", "brands", "64f1b2c8e4b0d8a8d8f8f8f8"]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "SubCategory APIs",
+        "item": [
+          {
+            "name": "Add SubCategory",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer <your-jwt-token>",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "type": "text"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"SubCategory A\",\n  \"categoryId\": \"64f1b2c8e4b0d8a8d8f8f8f8\",\n  \"companyId\": \"64f1b2c8e4b0d8a8d8f8f8f8\"\n}"
+              },
+              "url": {
+                "raw": "http://localhost:5000/api/subcategories",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "5000",
+                "path": ["api", "subcategories"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get SubCategory by ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer <your-jwt-token>",
+                  "type": "text"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:5000/api/subcategories/64f1b2c8e4b0d8a8d8f8f8f8",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "5000",
+                "path": ["api", "subcategories", "64f1b2c8e4b0d8a8d8f8f8f8"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Update SubCategory",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer <your-jwt-token>",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "type": "text"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"Updated SubCategory A\",\n  \"categoryId\": \"64f1b2c8e4b0d8a8d8f8f8f8\",\n  \"companyId\": \"64f1b2c8e4b0d8a8d8f8f8f8\"\n}"
+              },
+              "url": {
+                "raw": "http://localhost:5000/api/subcategories/64f1b2c8e4b0d8a8d8f8f8f8",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "5000",
+                "path": ["api", "subcategories", "64f1b2c8e4b0d8a8d8f8f8f8"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Soft Delete SubCategory",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer <your-jwt-token>",
+                  "type": "text"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:5000/api/subcategories/64f1b2c8e4b0d8a8d8f8f8f8",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "5000",
+                "path": ["api", "subcategories", "64f1b2c8e4b0d8a8d8f8f8f8"]
+              }
+            },
+            "response": []
+          }
+        ]
+      }
+    ]
+  }
