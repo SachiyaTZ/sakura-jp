@@ -78,6 +78,10 @@ app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce')
+// mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce')
+//   .then(() => console.log('Connected to MongoDB'))
+//   .catch(err => console.error('Could not connect to MongoDB', err));
+
+mongoose.connect(process.env.MONGODB_URI || 'https://sakura-petals-backend-server.mongo.cosmos.azure.com:443/ecommerce')
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB', err));
