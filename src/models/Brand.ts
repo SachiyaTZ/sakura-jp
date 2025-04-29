@@ -8,7 +8,7 @@ export interface IBrand extends Document {
 
 const brandSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  companyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true }, // Reference to Company
+  companyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: false }, // Reference to Company
   deleted: { type: Boolean, default: false }, // Soft delete flag
 });
 
