@@ -11,7 +11,7 @@ router.get('/delivery/:trackingNumber', trackDelivery);
 router.get('/freight-shipping-options', getFreightShippingOptions);
 router.get('/delivery/:trackingNumber', trackDelivery);
 
-router.post('/drop-shipping', authenticate, authorize(['admin']), createDropShippingOrder);
+router.post('/drop-shipping', authenticate, authorize(['admin', 'manager']), createDropShippingOrder);
 router.post('/custom-shipping-agreements', authenticate, authorize(['admin']), createCustomShippingAgreement);
 
 export default router;

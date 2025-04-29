@@ -7,6 +7,7 @@ export interface ICompany extends Document {
   phone: string;
   status: 'pending' | 'approved' | 'rejected';
   adminNotes?: string;
+  
 }
 
 const companySchema = new mongoose.Schema({

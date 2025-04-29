@@ -4,7 +4,6 @@ import { authenticate, authorize } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
-// Admin-only route
-router.post('/custom-pricing', authenticate, authorize(['admin']), setCustomPrice);
+router.post('/custom-pricing', authenticate, authorize(['admin, manager']), setCustomPrice);
 
 export default router;

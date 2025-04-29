@@ -60,3 +60,35 @@ export const getCompanies = async (req: Request, res: Response): Promise<void> =
   }
 };
 
+export const getCompanyById = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const userRole = (req as any).user.role; 
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ error: 'Invalid company ID format' });
+      return;
+    }
+
+    const company = await Company.findById(id).select('-__v'); 
+
+    if (!company) {
+      res.status(404).json({ error: 'Company not found' });
+      return;
+    }
+
+    if (userRole === 'manager' && company.status !== 'approved') {
+      res.status(403).json({ error: 'Access denied. Only approved companies are visible to managers.' });
+      return;
+    }
+
+    res.json(company);
+  } catch (error) {
+    console.error('Error fetching company:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    res.status(500).json({ 
+      error: 'Error fetching company details',
+      details: errorMessage 
+    });
+  }
+};

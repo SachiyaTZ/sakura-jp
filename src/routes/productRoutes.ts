@@ -28,7 +28,7 @@ router.get('/users/:userId/recommendations', getRecommendations);
 // Admin-only routes
 router.post('/bulk-import', authenticate, authorize(['admin']), upload.single('file'), bulkImportProducts);
 router.post('/custom-pricing', authenticate, authorize(['admin']), setCustomPrice);
-router.post('/bundles', authenticate, authorize(['admin']), createProductBundle);
+router.post('/bundles', authenticate, authorize(['admin','manager']), createProductBundle);
 
 router.post('/', authenticate, authorize(['admin']), upload.array('images'), createProduct);
 router.get('/', authenticate, authorize(['admin']), getAllProducts); // Add this route

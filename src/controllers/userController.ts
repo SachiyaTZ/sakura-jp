@@ -8,6 +8,14 @@ import fs from 'fs';
 import csv from 'csv-parser';
 import xlsx from 'xlsx';
 
+interface UserImportRow {
+  email: string;
+  password: string;
+  role?: string;
+  isVerified?: boolean;
+  is2FAEnabled?: boolean;
+}
+
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
@@ -180,40 +188,119 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     }
 };
 
+// export const bulkImportUsers = async (req: Request, res: Response): Promise<void> => {
+//     if (!req.file) {
+//       res.status(400).json({ error: 'No file uploaded' });
+//       return;
+//     }
+  
+//     const filePath = req.file.path;
+//     const users: any[] = [];
+  
+//     try {
+//       if (filePath.endsWith('.csv')) {
+//         fs.createReadStream(filePath)
+//           .pipe(csv())
+//           .on('data', (row) => users.push(row))
+//           .on('end', async () => {
+//             await User.insertMany(users);
+//             res.json({ message: 'Users imported successfully', users });
+//           });
+//       } else if (filePath.endsWith('.xlsx')) {
+//         const workbook = xlsx.readFile(filePath);
+//         const sheet = workbook.Sheets[workbook.SheetNames[0]];
+//         const data = xlsx.utils.sheet_to_json(sheet);
+//         await User.insertMany(data);
+//         res.json({ message: 'Users imported successfully', users: data });
+//       } else {
+//         res.status(400).json({ error: 'Unsupported file format' });
+//       }
+//     } catch (error) {
+//       res.status(500).json({ error: 'Error importing users' });
+//     } finally {
+//       fs.unlinkSync(filePath); // Delete the file after processing
+//     }
+// };
+
 export const bulkImportUsers = async (req: Request, res: Response): Promise<void> => {
-    if (!req.file) {
-      res.status(400).json({ error: 'No file uploaded' });
-      return;
-    }
-  
-    const filePath = req.file.path;
-    const users: any[] = [];
-  
-    try {
-      if (filePath.endsWith('.csv')) {
+  if (!req.file) {
+    res.status(400).json({ error: 'No file uploaded' });
+    return;
+  }
+
+  const filePath = req.file.path;
+  const users: UserImportRow[] = [];
+
+  try {
+    if (filePath.endsWith('.csv')) {
+      // Process CSV
+      await new Promise<void>((resolve, reject) => {
         fs.createReadStream(filePath)
           .pipe(csv())
-          .on('data', (row) => users.push(row))
-          .on('end', async () => {
-            await User.insertMany(users);
-            res.json({ message: 'Users imported successfully', users });
-          });
-      } else if (filePath.endsWith('.xlsx')) {
-        const workbook = xlsx.readFile(filePath);
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const data = xlsx.utils.sheet_to_json(sheet);
-        await User.insertMany(data);
-        res.json({ message: 'Users imported successfully', users: data });
-      } else {
-        res.status(400).json({ error: 'Unsupported file format' });
+          .on('data', (row: unknown) => {
+            // Type assertion and validation
+            const userRow = row as UserImportRow;
+            
+            // Validate required fields
+            if (!userRow.email || !userRow.password) {
+              reject(new Error('Missing required fields (email or password) in some rows'));
+              return;
+            }
+            users.push(userRow);
+          })
+          .on('end', resolve)
+          .on('error', (error: Error) => reject(error));
+      });
+    } else if (filePath.endsWith('.xlsx')) {
+      // Process Excel
+      const workbook = xlsx.readFile(filePath);
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const data = xlsx.utils.sheet_to_json<UserImportRow>(sheet);
+      
+      // Validate required fields
+      for (const row of data) {
+        if (!row.email || !row.password) {
+          throw new Error('Missing required fields (email or password) in some rows');
+        }
       }
-    } catch (error) {
-      res.status(500).json({ error: 'Error importing users' });
-    } finally {
-      fs.unlinkSync(filePath); // Delete the file after processing
+      users.push(...data);
+    } else {
+      res.status(400).json({ error: 'Unsupported file format. Please upload CSV or Excel.' });
+      return;
     }
+    
+    // Hash passwords before saving
+    const usersToSave = await Promise.all(users.map(async (user) => {
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+      return {
+        ...user,
+        password: hashedPassword,
+        isVerified: user.isVerified ?? true, // Default to true if not specified
+        role: user.role || 'buyer', // Default role
+        is2FAEnabled: user.is2FAEnabled || false // Default to false
+      };
+    }));
+    
+    await User.insertMany(usersToSave);
+    res.json({ 
+      message: 'Users imported successfully',
+      count: usersToSave.length
+    });
+  } catch (error: unknown) {
+    console.error('Import error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    res.status(500).json({ 
+      error: 'Error importing users',
+      details: errorMessage 
+    });
+  } finally {
+    // Clean up uploaded file
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  }
 };
-  
+
 export const bulkExportUsers = async (req: Request, res: Response): Promise<void> => {
     try {
       const users = await User.find().select('-password');

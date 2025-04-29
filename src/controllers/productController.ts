@@ -143,16 +143,36 @@ export const setCustomPrice = async (req: Request, res: Response): Promise<void>
     }
 };
 
-export const createProductBundle = async (req: Request, res: Response): Promise<void> => {
-    const { name, products, price } = req.body;
+// export const createProductBundle = async (req: Request, res: Response): Promise<void> => {
+//     const { name, products, price } = req.body;
   
-    try {
-      const productBundle = new ProductBundle({ name, products, price });
-      await productBundle.save();
-      res.status(201).json({ message: 'Product bundle created successfully', productBundle });
-    } catch (error) {
-      res.status(500).json({ error: 'Error creating product bundle' });
+//     try {
+//       const productBundle = new ProductBundle({ name, products, price });
+//       await productBundle.save();
+//       res.status(201).json({ message: 'Product bundle created successfully', productBundle });
+//     } catch (error) {
+//       res.status(500).json({ error: 'Error creating product bundle' });
+//     }
+// };
+
+export const createProductBundle = async (req: Request, res: Response): Promise<void> => {
+  const { name, products, price } = req.body;
+
+  try {
+    // Check if a bundle with the same name already exists
+    const existingBundle = await ProductBundle.findOne({ name });
+    
+    if (existingBundle) {
+      res.status(400).json({ error: 'A product bundle with this name already exists' });
+      return;
     }
+
+    const productBundle = new ProductBundle({ name, products, price });
+    await productBundle.save();
+    res.status(201).json({ message: 'Product bundle created successfully', productBundle });
+  } catch (error) {
+    res.status(500).json({ error: 'Error creating product bundle' });
+  }
 };
 
 export const checkStock = async (req: Request, res: Response): Promise<void> => {
