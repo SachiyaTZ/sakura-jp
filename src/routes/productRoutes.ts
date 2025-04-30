@@ -1,5 +1,5 @@
 import express from 'express';
-import { addReview, bulkImportProducts, createProductBundle, getRecommendations, searchProducts, setCustomPrice, checkStock, createProduct, getAllProducts, softDeleteProduct, updateProduct } from '../controllers/productController';
+import { addReview, bulkImportProducts, createProductBundle, getRecommendations, searchProducts, setCustomPrice, checkStock, createProduct, getAllProducts, softDeleteProduct, updateProduct, getProductById } from '../controllers/productController';
 import { authenticate, authorize } from '../middleware/authMiddleware';
 import multer from 'multer';
 
@@ -34,5 +34,6 @@ router.post('/', authenticate, authorize(['admin']), upload.array('images'), cre
 router.get('/', authenticate, authorize(['admin']), getAllProducts); // Add this route
 router.delete('/:id', authenticate, authorize(['admin']), softDeleteProduct); // Add this route
 router.put('/:id', authenticate, authorize(['admin']), upload.array('newImages'), updateProduct); 
+router.get('/:id', authenticate, authorize(['admin', 'manager', 'buyer']), getProductById);
 
 export default router;
