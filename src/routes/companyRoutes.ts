@@ -10,6 +10,6 @@ router.post('/register', authenticate, authorize(['admin']), registerCompany);
 // Admin-only routes
 router.put('/approve/:id', authenticate, authorize(['admin']), approveCompany);
 router.get('/', authenticate, authorize(['admin']), getCompanies);
-router.get('/:id', authenticate, authorize(['admin', 'manager']), getCompanyById);
+router.get('/:id', authenticate, getCompanyById);
 
 export default router;
