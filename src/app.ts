@@ -34,7 +34,7 @@ import securityRoutes from './models/securityRoutes';
 import brandRoutes from './routes/brandRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import subCategoryRoutes from './routes/subCategoryRoutes';
-
+import subscriptionPlanRouter from './routes/subscriptionPlanRoutes';
 const app = express();
 
 // Middleware
@@ -76,6 +76,8 @@ app.use('/api/security', securityRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/subcategories', subCategoryRoutes);
+
+app.use('/api/subscription-plans', subscriptionPlanRouter);
 
 // Health Check Endpoint
 app.get('/api/health', (req, res) => {

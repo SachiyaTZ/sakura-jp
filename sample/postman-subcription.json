@@ -1,142 +1,305 @@
 {
-    "info": {
-      "_postman_id": "a1b2c3d4-e5f6-7890-f1e2-d3c4b5a6f7e8",
-      "name": "Subscription Management API",
-      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-    },
-    "item": [
-      {
-        "name": "Create Subscription",
-        "request": {
-          "method": "POST",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json",
-              "type": "text"
-            },
-            {
-              "key": "Authorization",
-              "value": "Bearer {{access_token}}",
-              "type": "text"
-            }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"companyId\": \"507f1f77bcf86cd799439011\",\n  \"productId\": \"607f1f77bcf86cd799439022\",\n  \"type\": \"monthly\"\n}"
-          },
-          "url": {
-            "raw": "{{base_url}}/subscriptions",
-            "host": ["{{base_url}}"],
-            "path": ["subscriptions"]
-          }
-        },
-        "response": []
-      },
-      {
-        "name": "Get All Subscriptions",
-        "request": {
-          "method": "GET",
-          "header": [
-            {
-              "key": "Authorization",
-              "value": "Bearer {{access_token}}",
-              "type": "text"
-            }
-          ],
-          "url": {
-            "raw": "{{base_url}}/subscriptions",
-            "host": ["{{base_url}}"],
-            "path": ["subscriptions"]
-          }
-        },
-        "response": []
-      },
-      {
-        "name": "Get Subscriptions by Type",
-        "request": {
-          "method": "GET",
-          "header": [
-            {
-              "key": "Authorization",
-              "value": "Bearer {{access_token}}",
-              "type": "text"
-            }
-          ],
-          "url": {
-            "raw": "{{base_url}}/subscriptions/type/monthly",
-            "host": ["{{base_url}}"],
-            "path": ["subscriptions", "type", "monthly"]
-          }
-        },
-        "response": []
-      },
-      {
-        "name": "Update Subscription",
-        "request": {
-          "method": "PUT",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json",
-              "type": "text"
-            },
-            {
-              "key": "Authorization",
-              "value": "Bearer {{access_token}}",
-              "type": "text"
-            }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"type\": \"annually\",\n  \"status\": \"active\"\n}"
-          },
-          "url": {
-            "raw": "{{base_url}}/subscriptions/507f1f77bcf86cd799439011",
-            "host": ["{{base_url}}"],
-            "path": ["subscriptions", "507f1f77bcf86cd799439011"]
-          }
-        },
-        "response": []
-      },
-      {
-        "name": "Soft Delete Subscription",
-        "request": {
-          "method": "DELETE",
-          "header": [
-            {
-              "key": "Authorization",
-              "value": "Bearer {{access_token}}",
-              "type": "text"
-            }
-          ],
-          "url": {
-            "raw": "{{base_url}}/subscriptions/507f1f77bcf86cd799439011",
-            "host": ["{{base_url}}"],
-            "path": ["subscriptions", "507f1f77bcf86cd799439011"]
-          }
-        },
-        "response": []
-      }
-    ],
-    "variable": [
-      {
-        "key": "base_url",
-        "value": "http://localhost:3000/api"
-      },
-      {
-        "key": "access_token",
-        "value": "your_jwt_token_here"
-      }
-    ],
-    "auth": {
-      "type": "bearer",
-      "bearer": [
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-f1e2-d3c4b5a6f7e8",
+    "name": "Subscription Management API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Complete API collection for managing subscriptions and subscription plans"
+  },
+  "item": [
+    {
+      "name": "Subscription Plans",
+      "item": [
         {
-          "key": "token",
-          "value": "{{access_token}}",
-          "type": "string"
+          "name": "Create Subscription Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Premium Monthly\",\n  \"price\": 29.99,\n  \"description\": \"Premium monthly subscription with all features\",\n  \"billingCycle\": \"monthly\",\n  \"features\": [\"Feature 1\", \"Feature 2\", \"Feature 3\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/subscription-plans",
+              "host": ["{{base_url}}"],
+              "path": ["subscription-plans"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Subscription Plans",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscription-plans",
+              "host": ["{{base_url}}"],
+              "path": ["subscription-plans"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Subscription Plan by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscription-plans/{{subscription_plan_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["subscription-plans", "{{subscription_plan_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Subscription Plan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 34.99,\n  \"description\": \"Updated premium monthly plan\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/subscription-plans/{{subscription_plan_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["subscription-plans", "{{subscription_plan_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Soft Delete Subscription Plan",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscription-plans/{{subscription_plan_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["subscription-plans", "{{subscription_plan_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Subscriptions",
+      "item": [
+        {
+          "name": "Create Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyId\": \"{{company_id}}\",\n  \"productId\": \"{{product_id}}\",\n  \"planId\": \"{{subscription_plan_id}}\",\n  \"type\": \"monthly\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/subscriptions",
+              "host": ["{{base_url}}"],
+              "path": ["subscriptions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions",
+              "host": ["{{base_url}}"],
+              "path": ["subscriptions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Subscriptions by Type",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions/type/monthly",
+              "host": ["{{base_url}}"],
+              "path": ["subscriptions", "type", "monthly"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Subscription",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"annually\",\n  \"status\": \"active\",\n  \"planId\": \"{{new_subscription_plan_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/subscriptions/{{subscription_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["subscriptions", "{{subscription_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Soft Delete Subscription",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions/{{subscription_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["subscriptions", "{{subscription_id}}"]
+            }
+          },
+          "response": []
         }
       ]
     }
-  }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api",
+      "description": "Base URL for the API"
+    },
+    {
+      "key": "access_token",
+      "value": "your_jwt_token_here",
+      "description": "JWT access token for authentication"
+    },
+    {
+      "key": "company_id",
+      "value": "507f1f77bcf86cd799439011",
+      "description": "Sample company ID"
+    },
+    {
+      "key": "product_id",
+      "value": "607f1f77bcf86cd799439022",
+      "description": "Sample product ID"
+    },
+    {
+      "key": "subscription_plan_id",
+      "value": "707f1f77bcf86cd799439033",
+      "description": "Sample subscription plan ID"
+    },
+    {
+      "key": "new_subscription_plan_id",
+      "value": "807f1f77bcf86cd799439044",
+      "description": "Sample new subscription plan ID for updates"
+    },
+    {
+      "key": "subscription_id",
+      "value": "907f1f77bcf86cd799439055",
+      "description": "Sample subscription ID"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "console.log('Preparing request...');"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('Status code is 200', function() {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test('Response has valid JSON body', function() {",
+          "    pm.response.to.be.json;",
+          "});"
+        ]
+      }
+    }
+  ]
+}
