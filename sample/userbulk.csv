@@ -1,3 +1,3 @@
-email,password,role
-user1@example.com,password123,buyer
-user2@example.com,password123,manager
+email,password,role,isVerified,is2FAEnabled
+user1@example.com,password123,buyer,TRUE,FALSE
+user2@example.com,password123,manager,TRUE,FALSE
