@@ -7,6 +7,9 @@ import CustomPricing from '../models/CustomPricing';
 import ProductBundle from '../models/ProductBundle';
 import multer from 'multer';
 import mongoose from 'mongoose';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import Company from '../models/Company';
 
 // Helper function to validate and process images
 const processImages = (images: any[]): string[] => {
@@ -310,54 +313,154 @@ export const checkStock = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
+// export const createProduct = async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     // Process text fields
+//     const {
+//       name,
+//       description,
+//       price,
+//       category,
+//       subCategory,
+//       brand,
+//       company,
+//       stock,
+//       colors,
+//       sizes,
+//       babyClothSizes,
+//       moq
+//     } = req.body;
+
+//     // Process image files
+//     const imageFiles = req.files as Express.Multer.File[];
+//     const images = imageFiles.map(file => {
+//       return `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+//     });
+
+//     // Create the product
+//     const product = new Product({
+//       name,
+//       description,
+//       price: parseFloat(price),
+//       category,
+//       subCategory,
+//       brand,
+//       company,
+//       stock: parseInt(stock),
+//       colors: JSON.parse(colors),
+//       sizes: JSON.parse(sizes),
+//       babyClothSizes: JSON.parse(babyClothSizes),
+//       moq: moq ? parseInt(moq) : 1,
+//       images
+//     });
+
+//     await product.save();
+//     res.status(201).json({ message: 'Product created successfully', product });
+//   } catch (error) {
+//     console.error('Error creating product:', error);
+//     res.status(500).json({ 
+//       error: error instanceof Error ? error.message : 'Error creating product' 
+//     });
+//   }
+// };
+
 export const createProduct = async (req: Request, res: Response): Promise<void> => {
   try {
-    // Process text fields
-    const {
-      name,
-      description,
-      price,
-      category,
-      subCategory,
-      brand,
-      company,
-      stock,
-      colors,
-      sizes,
-      babyClothSizes,
-      moq
-    } = req.body;
-
-    // Process image files
+    const user = (req as any).user;
     const imageFiles = req.files as Express.Multer.File[];
-    const images = imageFiles.map(file => {
-      return `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
-    });
 
-    // Create the product
+    // For managers, always use their company ID and validate they're not trying to set a different one
+    if (user.role === 'manager') {
+      // If company is provided in request body, it must match manager's company
+      if (req.body.company && req.body.company !== user.companyId.toString()) {
+        res.status(403).json({ 
+          error: 'Managers can only create products for their own company',
+          yourCompanyId: user.companyId
+        });
+        return;
+      }
+      // Force the company to be manager's company
+      req.body.company = user.companyId;
+    }
+
+    // Validate company exists (for both admin and manager)
+    const companyExists = await Company.exists({ _id: req.body.company });
+    if (!companyExists) {
+      res.status(400).json({ error: 'Specified company does not exist' });
+      return;
+    }
+
+    // Process images
+    const images = imageFiles?.map(file => `/uploads/${file.filename}`) || [];
+
+    // Create product with all parameters
     const product = new Product({
-      name,
-      description,
-      price: parseFloat(price),
-      category,
-      subCategory,
-      brand,
-      company,
-      stock: parseInt(stock),
-      colors: JSON.parse(colors),
-      sizes: JSON.parse(sizes),
-      babyClothSizes: JSON.parse(babyClothSizes),
-      moq: moq ? parseInt(moq) : 1,
-      images
+      name: req.body.name,
+      description: req.body.description,
+      price: parseFloat(req.body.price),
+      category: req.body.category,
+      subCategory: req.body.subCategory,
+      brand: req.body.brand,
+      company: req.body.company, // Now properly validated
+      stock: parseInt(req.body.stock),
+      colors: req.body.colors ? JSON.parse(req.body.colors) : [],
+      sizes: req.body.sizes ? JSON.parse(req.body.sizes) : [],
+      babyClothSizes: req.body.babyClothSizes ? JSON.parse(req.body.babyClothSizes) : [],
+      images,
+      moq: req.body.moq ? parseInt(req.body.moq) : 1,
+      createdBy: user._id,
+      tags: req.body.tags ? JSON.parse(req.body.tags) : [],
+      isFeatured: req.body.isFeatured === 'true',
+      discount: req.body.discount ? parseFloat(req.body.discount) : 0,
+      weight: req.body.weight ? parseFloat(req.body.weight) : undefined,
+      dimensions: req.body.dimensions ? JSON.parse(req.body.dimensions) : undefined
     });
 
     await product.save();
-    res.status(201).json({ message: 'Product created successfully', product });
+
+    const populatedProduct = await Product.findById(product._id)
+      .populate('brand', 'name')
+      .populate('company', 'name')
+      .populate('createdBy', 'name email');
+
+    res.status(201).json({
+      message: 'Product created successfully',
+      product: populatedProduct
+    });
+
   } catch (error) {
     console.error('Error creating product:', error);
+    
+    if (error instanceof mongoose.Error.ValidationError) {
+      const errors = Object.values(error.errors).map(err => err.message);
+      res.status(400).json({ error: 'Validation error', details: errors });
+      return;
+    }
+    
     res.status(500).json({ 
-      error: error instanceof Error ? error.message : 'Error creating product' 
+      error: 'Error creating product',
+      details: error instanceof Error ? error.message : 'Unknown error'
     });
+  }
+};
+
+export const getCompanyProducts = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = (req as any).user;
+    const companyId = user.role === 'manager' ? user.companyId : req.params.companyId;
+    if (user.role === 'manager' && user.companyId.toString() !== companyId) {
+      res.status(403).json({ error: 'Not authorized to view these products' });
+      return;
+    }
+
+    const products = await Product.find({ 
+      company: companyId,
+      deleted: false 
+    }).populate('brand', 'name');
+
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching products' });
   }
 };
 

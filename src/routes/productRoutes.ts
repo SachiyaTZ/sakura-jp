@@ -1,5 +1,5 @@
 import express from 'express';
-import { addReview, bulkImportProducts, createProductBundle, getRecommendations, searchProducts, setCustomPrice, checkStock, createProduct, getAllProducts, softDeleteProduct, updateProduct, getProductById } from '../controllers/productController';
+import { addReview, bulkImportProducts, createProductBundle, getRecommendations, searchProducts, setCustomPrice, checkStock, createProduct, getAllProducts, softDeleteProduct, updateProduct, getProductById, getCompanyProducts } from '../controllers/productController';
 import { authenticate, authorize } from '../middleware/authMiddleware';
 import multer from 'multer';
 
@@ -30,10 +30,11 @@ router.post('/bulk-import', authenticate, authorize(['admin']), upload.single('f
 router.post('/custom-pricing', authenticate, authorize(['admin']), setCustomPrice);
 router.post('/bundles', authenticate, authorize(['admin','manager']), createProductBundle);
 
-router.post('/', authenticate, authorize(['admin']), upload.array('images'), createProduct);
-router.get('/', authenticate, authorize(['admin']), getAllProducts); // Add this route
-router.delete('/:id', authenticate, authorize(['admin']), softDeleteProduct); // Add this route
+router.post('/', authenticate, authorize(['admin', 'manager']), upload.array('images'), createProduct);
+router.get('/', authenticate, authorize(['admin', 'manager']), getAllProducts);
+router.delete('/:id', authenticate, authorize(['admin', 'manager']), softDeleteProduct);
 router.put('/:id', authenticate, authorize(['admin']), upload.array('newImages'), updateProduct); 
 router.get('/:id', authenticate, authorize(['admin', 'manager', 'buyer']), getProductById);
+router.get('/company/:companyId?', authenticate, authorize(['admin', 'manager']), getCompanyProducts);
 
 export default router;

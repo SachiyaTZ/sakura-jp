@@ -16,6 +16,40 @@ interface UserImportRow {
   is2FAEnabled?: boolean;
 }
 
+// export const bulkImportUsers = async (req: Request, res: Response): Promise<void> => {
+//     if (!req.file) {
+//       res.status(400).json({ error: 'No file uploaded' });
+//       return;
+//     }
+  
+//     const filePath = req.file.path;
+//     const users: any[] = [];
+  
+//     try {
+//       if (filePath.endsWith('.csv')) {
+//         fs.createReadStream(filePath)
+//           .pipe(csv())
+//           .on('data', (row) => users.push(row))
+//           .on('end', async () => {
+//             await User.insertMany(users);
+//             res.json({ message: 'Users imported successfully', users });
+//           });
+//       } else if (filePath.endsWith('.xlsx')) {
+//         const workbook = xlsx.readFile(filePath);
+//         const sheet = workbook.Sheets[workbook.SheetNames[0]];
+//         const data = xlsx.utils.sheet_to_json(sheet);
+//         await User.insertMany(data);
+//         res.json({ message: 'Users imported successfully', users: data });
+//       } else {
+//         res.status(400).json({ error: 'Unsupported file format' });
+//       }
+//     } catch (error) {
+//       res.status(500).json({ error: 'Error importing users' });
+//     } finally {
+//       fs.unlinkSync(filePath); // Delete the file after processing
+//     }
+// };
+
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
@@ -187,40 +221,6 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
       res.status(500).json({ error: 'Error resetting password' });
     }
 };
-
-// export const bulkImportUsers = async (req: Request, res: Response): Promise<void> => {
-//     if (!req.file) {
-//       res.status(400).json({ error: 'No file uploaded' });
-//       return;
-//     }
-  
-//     const filePath = req.file.path;
-//     const users: any[] = [];
-  
-//     try {
-//       if (filePath.endsWith('.csv')) {
-//         fs.createReadStream(filePath)
-//           .pipe(csv())
-//           .on('data', (row) => users.push(row))
-//           .on('end', async () => {
-//             await User.insertMany(users);
-//             res.json({ message: 'Users imported successfully', users });
-//           });
-//       } else if (filePath.endsWith('.xlsx')) {
-//         const workbook = xlsx.readFile(filePath);
-//         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-//         const data = xlsx.utils.sheet_to_json(sheet);
-//         await User.insertMany(data);
-//         res.json({ message: 'Users imported successfully', users: data });
-//       } else {
-//         res.status(400).json({ error: 'Unsupported file format' });
-//       }
-//     } catch (error) {
-//       res.status(500).json({ error: 'Error importing users' });
-//     } finally {
-//       fs.unlinkSync(filePath); // Delete the file after processing
-//     }
-// };
 
 export const bulkImportUsers = async (req: Request, res: Response): Promise<void> => {
   if (!req.file) {

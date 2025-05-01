@@ -98,7 +98,7 @@
 
 // export default mongoose.model<IProduct>('Product', productSchema);
 
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 
 export interface IProduct extends Document {
   name: string;
@@ -112,7 +112,7 @@ export interface IProduct extends Document {
   colors: string[];
   sizes: string[];
   babyClothSizes: string[];
-  images: string[]; // Array of Base64 encoded images
+  images: string[];
   ratings?: { userId: string; rating: number }[];
   reviews?: { userId: string; review: string }[];
   moq?: number;
@@ -131,7 +131,7 @@ const productSchema = new mongoose.Schema({
   colors: { type: [String], default: [] },
   sizes: { type: [String], default: [] },
   babyClothSizes: { type: [String], default: [] },
-  images: { type: [String], default: [] }, // Store Base64 strings
+  images: { type: [String], default: [] },
   ratings: {
     type: [
       {
@@ -152,6 +152,11 @@ const productSchema = new mongoose.Schema({
   },
   moq: { type: Number, default: 1 },
   deleted: { type: Boolean, default: false },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false
+  },
 });
 
 export default mongoose.model<IProduct>('Product', productSchema);
