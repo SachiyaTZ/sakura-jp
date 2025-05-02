@@ -181,42 +181,42 @@ import SubscriptionPlan from '../models/SubscriptionPlan';
 //   }
 // };
 
-export const createSubscription = async (req: Request, res: Response): Promise<void> => {
-  const { companyId, productId, planId, type } = req.body;
+// export const createSubscription = async (req: Request, res: Response): Promise<void> => {
+//   const { companyId, productId, planId, type } = req.body;
 
-  try {
-    // Verify the subscription plan exists
-    const plan = await SubscriptionPlan.findById(planId);
-    if (!plan || plan.deleted) {
-      res.status(400).json({ error: 'Invalid subscription plan' });
-      return;
-    }
+//   try {
+//     // Verify the subscription plan exists
+//     const plan = await SubscriptionPlan.findById(planId);
+//     if (!plan || plan.deleted) {
+//       res.status(400).json({ error: 'Invalid subscription plan' });
+//       return;
+//     }
 
-    // Calculate next billing date based on subscription type
-    const nextBillingDate = calculateNextBillingDate(type);
+//     // Calculate next billing date based on subscription type
+//     const nextBillingDate = calculateNextBillingDate(type);
     
-    const subscription = new Subscription({ 
-      companyId, 
-      productId,
-      planId,
-      type,
-      nextBillingDate
-    });
+//     const subscription = new Subscription({ 
+//       companyId, 
+//       productId,
+//       planId,
+//       type,
+//       nextBillingDate
+//     });
     
-    await subscription.save();
+//     await subscription.save();
     
-    res.status(201).json({ 
-      message: 'Subscription created successfully', 
-      subscription 
-    });
-  } catch (error) {
-    console.error('Error creating subscription:', error);
-    res.status(500).json({ 
-      error: 'Error creating subscription',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-};
+//     res.status(201).json({ 
+//       message: 'Subscription created successfully', 
+//       subscription 
+//     });
+//   } catch (error) {
+//     console.error('Error creating subscription:', error);
+//     res.status(500).json({ 
+//       error: 'Error creating subscription',
+//       details: error instanceof Error ? error.message : 'Unknown error'
+//     });
+//   }
+// };
 
 export const getAllSubscriptions = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -389,6 +389,45 @@ export const createDropShippingOrder = async (req: Request, res: Response): Prom
     res.status(201).json({ message: 'Drop shipping order created successfully', dropShippingOrder });
   } catch (error) {
     res.status(500).json({ error: 'Error creating drop shipping order' });
+  }
+};
+
+export const createSubscription = async (req: Request, res: Response): Promise<void> => {
+  const { companyId, planId, type } = req.body; 
+
+  try {
+    // Verify the subscription plan exists
+    const plan = await SubscriptionPlan.findById(planId);
+    if (!plan || plan.deleted) {
+      res.status(400).json({ error: 'Invalid subscription plan' });
+      return;
+    }
+
+    // Calculate next billing date based on subscription type
+    const nextBillingDate = calculateNextBillingDate(type);
+    
+    const subscription = new Subscription({ 
+      companyId, 
+      planId,
+      type,
+      nextBillingDate
+    });
+    
+    await subscription.save();
+    
+    res.status(201).json({ 
+      message: 'Subscription created successfully', 
+      subscription: {
+        ...subscription.toObject(),
+        planDetails: plan 
+      }
+    });
+  } catch (error) {
+    console.error('Error creating subscription:', error);
+    res.status(500).json({ 
+      error: 'Error creating subscription',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 };
 

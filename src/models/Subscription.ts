@@ -66,8 +66,8 @@ import mongoose, { Document } from 'mongoose';
 
 export interface ISubscription extends Document {
   companyId: mongoose.Schema.Types.ObjectId;
-  productId: mongoose.Schema.Types.ObjectId;
-  planId: mongoose.Schema.Types.ObjectId; // New field for subscription plan
+  // productId: mongoose.Schema.Types.ObjectId;
+  planId: mongoose.Schema.Types.ObjectId;
   type: string;
   status: string;
   nextBillingDate: Date;
@@ -80,11 +80,11 @@ const subscriptionSchema = new mongoose.Schema({
     ref: 'Company', 
     required: true 
   },
-  productId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Product', 
-    required: true 
-  },
+  // productId: { 
+  //   type: mongoose.Schema.Types.ObjectId, 
+  //   ref: 'Product', 
+  //   required: true 
+  // },
   planId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'SubscriptionPlan',
