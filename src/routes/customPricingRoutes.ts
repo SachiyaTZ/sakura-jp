@@ -1,9 +1,14 @@
 import express from 'express';
-import { setCustomPrice } from '../controllers/customPricingController';
+import { getCustomPriceById, getCustomPricing, setCustomPrice, softDeleteCustomPrice, updateCustomPrice } from '../controllers/customPricingController';
 import { authenticate, authorize } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
-router.post('/custom-pricing', authenticate, authorize(['admin, manager']), setCustomPrice);
+// router.post('/', authenticate, authorize(['admin, manager']), setCustomPrice);
+router.post('/', authenticate, authorize(['admin', 'manager']), setCustomPrice);
+router.get('/', authenticate, authorize(['admin', 'manager']), getCustomPricing);
+router.get('/:id', authenticate, authorize(['admin', 'manager']), getCustomPriceById);
+router.put('/:id', authenticate, authorize(['admin', 'manager']), updateCustomPrice);
+router.delete('/:id', authenticate, authorize(['admin', 'manager']), softDeleteCustomPrice);
 
 export default router;
