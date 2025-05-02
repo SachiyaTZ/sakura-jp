@@ -193,3 +193,33 @@ export const softDeleteCustomPrice = async (req: Request, res: Response): Promis
     });
   }
 };
+
+export const getCompanyManagerPricing = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = (req as any).user;
+    
+    // Only managers can access this endpoint
+    if (user.role !== 'manager') {
+      res.status(403).json({ error: 'Access restricted to managers only' });
+      return;
+    }
+
+    const pricing = await CustomPricing.find({
+      companyId: user.companyId,
+      isDeleted: { $ne: true }
+    })
+      .populate('customerId', 'name email')
+      .populate('productId', 'name price category')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      count: pricing.length,
+      pricing
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'Error fetching company pricing',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};
