@@ -7,6 +7,7 @@ import { sendPasswordResetEmail, sendVerificationEmail } from '../utils/email';
 import fs from 'fs';
 import csv from 'csv-parser';
 import xlsx from 'xlsx';
+import Company from '../models/Company';
 
 interface UserImportRow {
   email: string;
@@ -93,6 +94,71 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
   } catch (error) {
     console.error('Error registering user:', error); // Log the actual error
     res.status(500).json({ error: 'Error registering user' });
+  }
+};
+
+export const registerManager = async (req: Request, res: Response): Promise<void> => {
+  const { email, password, companyId } = req.body;
+
+  // Validate request body
+  if (!email || !password || !companyId) {
+    res.status(400).json({ error: 'Email, password, and companyId are required' });
+    return;
+  }
+
+  try {
+    // Check if the email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      res.status(400).json({ error: 'Email already exists' });
+      return;
+    }
+
+    // Verify company exists
+    const company = await Company.findById(companyId);
+    if (!company) {
+      res.status(400).json({ error: 'Company not found' });
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const verificationToken = uuidv4();
+
+    const user = new User({
+      email,
+      password: hashedPassword,
+      role: 'manager',
+      companyId,
+      verificationToken,
+      whitelistedIPs: req.ip ? [req.ip] : [] // Add requester's IP to whitelist
+    });
+
+    await user.save();
+
+    // Send verification email
+    try {
+      await sendVerificationEmail(email, verificationToken);
+    } catch (emailError) {
+      console.error('Error sending verification email:', emailError);
+      await User.deleteOne({ email });
+      res.status(500).json({ error: 'Error sending verification email' });
+      return;
+    }
+
+    res.status(201).json({ 
+      message: 'Manager registered successfully. Please check your email to verify your account.',
+      manager: {
+        email,
+        companyId,
+        role: 'manager'
+      }
+    });
+  } catch (error) {
+    console.error('Error registering manager:', error);
+    res.status(500).json({ 
+      error: 'Error registering manager',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 };
 

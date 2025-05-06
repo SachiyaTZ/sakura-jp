@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { registerUser, loginUser, getUserProfile, getAllUsers, verifyUser, forgotPassword, resetPassword, bulkImportUsers, bulkExportUsers } from '../controllers/userController';
+import { registerUser, loginUser, getUserProfile, getAllUsers, verifyUser, forgotPassword, resetPassword, bulkImportUsers, bulkExportUsers, registerManager } from '../controllers/userController';
 import { authenticate } from '../middleware/authMiddleware';
 import { authorize } from '../middleware/roleMiddleware';
 
@@ -14,6 +14,8 @@ router.get('/profile', authenticate, getUserProfile);
 router.get('/verify', verifyUser);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+
+router.post('/register/manager', authenticate, authorize(['admin']), registerManager);
 
 router.get('/admin/users', authenticate, authorize(['admin']), getAllUsers);
 
